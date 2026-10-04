@@ -61,6 +61,13 @@ const osThreadAttr_t BeepTask_attributes = {
   .stack_size = 128 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
+/* Definitions for ClawTask */
+osThreadId_t ClawTaskHandle;
+const osThreadAttr_t ClawTask_attributes = {
+  .name = "ClawTask",
+  .stack_size = 128 * 4,
+  .priority = (osPriority_t) osPriorityNormal,
+};
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -69,6 +76,7 @@ const osThreadAttr_t BeepTask_attributes = {
 
 void LedWaterTask(void *argument);
 void BeepAlarmTask(void *argument);
+void Claw_Task(void *argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -104,6 +112,9 @@ void MX_FREERTOS_Init(void) {
 
   /* creation of BeepTask */
   BeepTaskHandle = osThreadNew(BeepAlarmTask, NULL, &BeepTask_attributes);
+
+  /* creation of ClawTask */
+  ClawTaskHandle = osThreadNew(Claw_Task, NULL, &ClawTask_attributes);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -149,6 +160,24 @@ __weak void BeepAlarmTask(void *argument)
     osDelay(1);
   }
   /* USER CODE END BeepAlarmTask */
+}
+
+/* USER CODE BEGIN Header_Claw_Task */
+/**
+* @brief Function implementing the ClawTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_Claw_Task */
+__weak void Claw_Task(void *argument)
+{
+  /* USER CODE BEGIN Claw_Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END Claw_Task */
 }
 
 /* Private application code --------------------------------------------------*/

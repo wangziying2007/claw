@@ -5,6 +5,7 @@
 #include "main.h"
 #include "Led.h"
 #include "Beep.h"
+#include "Claw.h"
 
 extern uint8_t BeepAlarmTimes;
 

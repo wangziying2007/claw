@@ -95,33 +95,48 @@ void ZdriveDequeue(uint8_t bus)
 
 void ZdriveInit(void)
 {
-    for (uint32_t i = 0; i < MOTOR_AK60_COUNT; i++)
+    for (uint32_t i = 0; i < MOTOR_ZDRIVE_COUNT; i++)
     {
         Zmotor[i].param.GearRatio = 1.0f;
-        Zmotor[i].param.ReductionRatio = 6.0f;            //AK60减速比
         Zmotor[i].param.zdrive_id = (uint8_t)(i + 1U);
         Zmotor[i].valSetPre.pos_deg = 0.f;
         Zmotor[i].valSetNow.speed_rpm = 0.0f;
         Zmotor[i].valSetNow.pos_deg = 0.0f;
         Zmotor[i].valSetNow.current_A = 0.0f;
         Zmotor[i].valReal.pos_deg = 0.0f;
-        Zmotor[i].param.kpPos = 1.2f;
-        Zmotor[i].param.kdPos = 0.08f;
-        Zmotor[i].param.kpVel = 1.8f;
-        Zmotor[i].param.kiVel = 0.2f;
-        Zmotor[i].pvtparam.deltaT = 0.002f; // pvt默认点控间隔
+        Zmotor[i].pvtparam.deltaT = 0.002f;  // pvt默认点控间隔
         Zmotor[i].pvtparam.answer_mode = 2U; // 默认响应模式: 2:无反馈队列执行
-        Zmotor[i].mode = Zdrive_Disable;    /* 初始 setmode 为 disable,上电即失能 */
+        Zmotor[i].mode = Zdrive_Disable;     /* 初始 setmode 为 disable,上电即失能 */
         Zmotor[i].modeRead = Zdrive_Disable;
         Zmotor[i].err = Zdrive_Well; /* 上电无错误 */
         Zmotor[i].Begin = false;     /* 初始化完成后由任务层置 true */
+
+        /* AK60 与灵足 RS03 一些数据不同,按序号分别赋值 */
+        if (i < MOTOR_AK60_COUNT)
+        {
+            Zmotor[i].param.ReductionRatio = 6.0f; // AK60 减速比
+            Zmotor[i].param.kpPos = 1.2f;
+            Zmotor[i].param.kdPos = 0.08f;
+            Zmotor[i].param.kpVel = 1.8f;
+            Zmotor[i].param.kiVel = 0.2f;
+        }
+        else /* 序号 2 → ID 3,灵足 RS03 */
+        {
+            Zmotor[i].param.ReductionRatio = 9.0f; // RS03 减速比
+            Zmotor[i].param.kpPos = 1.2f;
+            Zmotor[i].param.kdPos = 0.08f;
+            Zmotor[i].param.kpVel = 1.8f;
+            Zmotor[i].param.kiVel = 0.2f;
+        }
     }
 
     ZdriveAsk(0xFU, Mode); /* 读取所有电机的模式 */
-    ZdriveAsk(0xFU, Pos_PID_P);
-    ZdriveAsk(0xFU, Pos_PID_D);
-    ZdriveAsk(0xFU, Vel_PID_P);
-    ZdriveAsk(0xFU, Vel_PID_I);
+                           //    ZdriveAsk(0xFU, Pos_PID_P);
+                           //    ZdriveAsk(0xFU, Pos_PID_D);
+                           //    ZdriveAsk(0xFU, Vel_PID_P);
+                           //    ZdriveAsk(0xFU, Vel_PID_I);
+
+    ZdriveSet(0.0f, 0xFU, Pur);
 }
 
 /* 统一 set:按 set_code 完成单位换算、帧编码、读回确认后再入队。
@@ -137,7 +152,7 @@ void ZdriveSet(float data, uint8_t id, uint8_t set_code)
     {
         id = 0xFU; /* broadcast address */
     }
-    else if (id > USE_ZDRIVE_NUM)
+    else if (id > USE_ZDRIVE_NUM && id != 0xFU)
     {
         return;
     }
@@ -434,7 +449,7 @@ static void Zdrive_RunMachine(Zdrive *motor, uint8_t id)
         {
             if (motor->pvtparam.PVTinitflag)
             {
-                ZdriveSet(motor->pvtparam.deltaT, id, Pos_Vel_TimeGap); // 设置时间间隔
+                ZdriveSet(motor->pvtparam.deltaT, id, Pos_Vel_TimeGap);  // 设置时间间隔
                 ZdriveSet(motor->pvtparam.answer_mode, id, Answer_Mode); // 设置响应模式
 
                 motor->pvtparam.PVTinitflag = false;

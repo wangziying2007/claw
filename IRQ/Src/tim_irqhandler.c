@@ -8,11 +8,21 @@
  */
 #include "tim_irqhandler.h"
 #include "motor_config.h"
+#include "Claw.h"
+
+/* 上电初始化延时:等 AK60 上电自检完成、CAN 反馈帧已能收到,再发置零/使能命令。
+   时基来源(必须与 Core/Src/tim.c 的 MX_TIM2_Init 保持一致):
+       TIM2 = 84MHz / (Prescaler+1) / (Period+1) = 84M/84/1000 = 1kHz
+   即 1 个 tick = 1ms。改 TIM2 分频/周期时,只需改 CLAW_BOOT_MAIN_FREQ_HZ。 */
+#define CLAW_BOOT_MAIN_FREQ_HZ 1000U /* TIM2 中断频率(Hz),见 MX_TIM2_Init */
+#define CLAW_BOOT_DELAY_MS 200U      /* 期望的上电延时(ms) */
+#define CLAW_BOOT_DELAY_TICKS ((CLAW_BOOT_DELAY_MS * CLAW_BOOT_MAIN_FREQ_HZ) / 1000U)
 
 
 void TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if(htim->Instance == TIM2){
+    if(htim->Instance == TIM2)
+    {
         #if USE_ZMDR
             ZdriveDequeue((uint8_t)MOTOR_ZDRIVE_CAN_BUS_1);
             ZdriveDequeue((uint8_t)MOTOR_ZDRIVE_CAN_BUS_2);

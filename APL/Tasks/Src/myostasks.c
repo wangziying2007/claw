@@ -28,3 +28,12 @@ void BeepAlarmTask(void *argument)
     osDelay(1);
   }
 }
+
+void Claw_Task(void *argument)
+{
+  for(;;)
+  {
+    Claw_Func();
+    osDelay(1);
+  }
+}

@@ -163,6 +163,13 @@ extern "C"
     void ZdriveSet(float data, uint8_t id, uint8_t set_code);
     void ZdriveAsk(uint8_t id, uint8_t ask_code);
 
+    /** 使能电机(写 mode 并置 Begin=true),Mode 帧由 ZdriveFunc 下发 */
+    bool ZdriveEnable(uint8_t id, ZdriveMode mode);
+    /** 失能电机,回到上电保护分支(Begin=false) */
+    void ZdriveDisable(uint8_t id);
+    /** 将当前位置(Pur/0x2E)清零,定义机械零点;id=0 表示广播 */
+    bool ZdriveZero(uint8_t id);
+
     // 使用 PVT/ MIT 轨迹帧时,请注意:
     // 1. PVT/ MIT 帧不走 ZdriveSet,请直接调用 ZdriveSetPVT/ ZdriveSetMIT
     // 2. FUNC函数没有对 PVT/ MIT 帧做很好的适配,使用的时候需要自行调用set函数

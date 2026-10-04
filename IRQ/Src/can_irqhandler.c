@@ -30,9 +30,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 
         if (HAL_CAN_GetRxMessage(hcan, CAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
         {
-#if USE_ZMDR
-            ZdriveReceive(RxHeader, RxData, 1U);
-#endif
+
         }
     }
 }

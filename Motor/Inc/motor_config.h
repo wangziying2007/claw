@@ -55,8 +55,9 @@ extern "C"
 /* 与 DJI 反馈 ID 0x201..0x204 的低 4 位重叠,Zdrive_IsOurs 无法区分,     */
 /* 原则上两者不同总线。                                                */
 /* ------------------------------------------------------------------ */
-#define MOTOR_ZDRIVE_COUNT 2U       /* 一共控 2 个Zdrive电机(AK60) */
+#define MOTOR_ZDRIVE_COUNT 3U       /* 一共控 3 个Zdrive电机(2个AK60，一个灵足RS03) */
 #define MOTOR_AK60_COUNT 2U       /* 共用2个AK60-6电机 */
+#define MOTOR_RS03_NUM 2U         /*灵足电机ID是3，序号是2*/
 #define MOTOR_ZDRIVE_SPLIT_COUNT 0 /* 0=不拆分;n=前 n 个 ID 走第一路 */
 #define MOTOR_ZDRIVE_CAN_BUS_1 1U   /* 第一路:CAN2 */
 #define MOTOR_ZDRIVE_CAN_BUS_2 1U   /* 第二路:CAN2(F4 无 CAN3) */
