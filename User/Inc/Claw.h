@@ -10,12 +10,8 @@
 #include "can.h"
 #include "cmsis_os2.h"
 
-#define REF_MM 0.0f           /* 上电起点中间横杆的绝对参考高度(mm) */
+#define REF_MM 293.0f         // 290.0f           /* 上电起点中间横杆的绝对参考高度(mm) */
 #define PA_MM_PER_REV 157.08f /* 电机输出轴转 1 圈 = 157.08mm */
-
-/* 夹爪机构使用的两个 AK60 电机在 Zmotor[] 中的索引 */
-#define CLAW_MOTOR_1 0U
-#define CLAW_MOTOR_2 1U
 
 #define ABS(x) ((x) > 0 ? (x) : (-(x)))
 

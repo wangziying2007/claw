@@ -12,15 +12,15 @@ static float Target_deg_2 = 0.0f;
 void Claw_Init(void)
 {
     claw.Begin = true;
-    claw.MODE_Set = Mode_Zero;
-    claw.MODE_Cur = Mode_Zero;
+    claw.MODE_Set = 0;
+    claw.MODE_Cur = 0;
     claw.MotivateFlag = false;
     claw.SoleMode = 0; /* 0=全关,见 Claw_Sole() */
 
     height.GetEarth = 275.0f;
     height.PlaceEarth = 280.0f;
     height.HoldEarth = 290.0f;
-    height.Ready = 354.0f;
+    height.Ready = 410.0f;
     
     Current_mm = REF_MM;
     Target_deg_1 = 0.0f;
@@ -40,10 +40,10 @@ void Change_to_Height(float Target_mm)
     float Relative_deg = (Relative_mm / PA_MM_PER_REV) * 360.0f;
 
     /* 相对当前位置(机构装好后实测这里该用加号还是减号) */
-    Target_deg_1 = Zmotor[CLAW_MOTOR_1].valReal.pos_deg - Relative_deg;
+    Target_deg_1 = Zmotor[CLAW_MOTOR_1].valReal.pos_deg + Relative_deg;
     Zmotor[CLAW_MOTOR_1].valSetNow.pos_deg = Target_deg_1;
 
-    Target_deg_2 = Zmotor[CLAW_MOTOR_2].valReal.pos_deg - Relative_deg;
+    Target_deg_2 = Zmotor[CLAW_MOTOR_2].valReal.pos_deg + Relative_deg;
     Zmotor[CLAW_MOTOR_2].valSetNow.pos_deg = Target_deg_2;
 
     while (ABS(Zmotor[CLAW_MOTOR_1].valSetNow.pos_deg - Zmotor[CLAW_MOTOR_1].valReal.pos_deg) > 5U) // 约2mm误差
@@ -100,18 +100,18 @@ void Claw_Sole()
     switch (claw.SoleMode)
     {
     case 0: // 全关
-        solenoid_on(3, 0);
+        solenoid_on(1, 0);
         break;
 
     case 1: // 全开
-        solenoid_on(3, 15);
+        solenoid_on(1, 15);
         break;
 
     case 2: // 1号开2号关
-        solenoid_on(3, 1);
+        solenoid_on(1, 1);
         break;
     case 3: // 1号关2号开
-        solenoid_on(3, 2);
+        solenoid_on(1, 2);
         break;
 
     default:
@@ -127,12 +127,12 @@ void Claw_Ready()
     Change_to_Deg(deg.Ready);
     osDelay(50);
 
-    solenoid_on(3, 15);
+    solenoid_on(1, 15);
 }
 
 void Claw_Rs03()
 {
-    solenoid_on(3, 0);
+    solenoid_on(1, 0);
 
     Change_to_Deg(deg.Ready);
     osDelay(50);
@@ -144,7 +144,7 @@ void Claw_GetEarth()
     Change_to_Height(height.GetEarth);
     osDelay(100);
 
-    solenoid_on(3, 0);
+    solenoid_on(1, 0);
 }
 
 void Claw_PlaceEarth()
@@ -152,17 +152,17 @@ void Claw_PlaceEarth()
     Change_to_Height(height.PlaceEarth);
     osDelay(100);
 
-    solenoid_on(3, 15);
+    solenoid_on(1, 15);
 }
 
 void Claw_Zero()
 {
-    solenoid_on(3, 15);
+    solenoid_on(1, 15);
 
     Change_to_Height(height.Ready);
     osDelay(100);
 
-    solenoid_on(3, 0); // 这里要想想怎么保证合爪时一定不会夹着东西
+    solenoid_on(1, 0); // 这里要想想怎么保证合爪时一定不会夹着东西
 
     Change_to_Deg(0.0f);
     osDelay(50);

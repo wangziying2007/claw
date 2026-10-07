@@ -109,7 +109,7 @@ int main(void)
   Beep_Init();
   CAN_InitSendQueue();
   UART_Start_Recieve();
-  solenoid_init(3);
+  solenoid_init();   /* 电磁阀板 CAN 控制模块(发送方),须在 MX_CANx_Init 之后 */
   #if USE_DJ
   DJmotor_Init();
   #endif

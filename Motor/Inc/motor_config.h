@@ -56,7 +56,10 @@ extern "C"
 /* 原则上两者不同总线。                                                */
 /* ------------------------------------------------------------------ */
 #define MOTOR_ZDRIVE_COUNT 3U       /* 一共控 3 个Zdrive电机(2个AK60，一个灵足RS03) */
-#define MOTOR_AK60_COUNT 2U       /* 共用2个AK60-6电机 */
+#define MOTOR_AK60_COUNT  2U
+/* 夹爪机构使用的两个 AK60 电机在 Zmotor[] 中的索引 */
+#define CLAW_MOTOR_1 0U
+#define CLAW_MOTOR_2 1U     
 #define MOTOR_RS03_NUM 2U         /*灵足电机ID是3，序号是2*/
 #define MOTOR_ZDRIVE_SPLIT_COUNT 0 /* 0=不拆分;n=前 n 个 ID 走第一路 */
 #define MOTOR_ZDRIVE_CAN_BUS_1 1U   /* 第一路:CAN2 */

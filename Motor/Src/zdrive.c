@@ -112,19 +112,19 @@ void ZdriveInit(void)
         Zmotor[i].Begin = false;     /* 初始化完成后由任务层置 true */
 
         /* AK60 与灵足 RS03 一些数据不同,按序号分别赋值 */
-        if (i < MOTOR_AK60_COUNT)
+        if (i < MOTOR_AK60_COUNT )
         {
             Zmotor[i].param.ReductionRatio = 6.0f; // AK60 减速比
-            Zmotor[i].param.kpPos = 1.2f;
-            Zmotor[i].param.kdPos = 0.08f;
-            Zmotor[i].param.kpVel = 1.8f;
-            Zmotor[i].param.kiVel = 0.2f;
+            Zmotor[i].param.kpPos = 1.1f;
+            Zmotor[i].param.kdPos = 0.001f;
+            Zmotor[i].param.kpVel = 1.2f;
+            Zmotor[i].param.kiVel = 0.05f;
         }
         else /* 序号 2 → ID 3,灵足 RS03 */
         {
-            Zmotor[i].param.ReductionRatio = 9.0f; // RS03 减速比
+            Zmotor[i].param.ReductionRatio = 15.729f; // RS03 减速比
             Zmotor[i].param.kpPos = 1.2f;
-            Zmotor[i].param.kdPos = 0.08f;
+            Zmotor[i].param.kdPos = 0.008f;
             Zmotor[i].param.kpVel = 1.8f;
             Zmotor[i].param.kiVel = 0.2f;
         }
